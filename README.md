@@ -31,7 +31,7 @@ in `~/.config/autostart`.
 cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/.local/ # install to ~./local/bin
 
 # proceed to install the binary itself
-# install monitor-sync to to ${CMAKE_INSTALL_PREFIX}
+# install monitor-sync to ${CMAKE_INSTALL_PREFIX}
 cmake --build build --target install 
 
 # on the server machine
