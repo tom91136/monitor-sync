@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=monitor-sync (server)
+Exec=@CMAKE_INSTALL_PREFIX@/monitor-sync server
+Comment=Start the monitor-sync server
