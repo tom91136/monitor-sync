@@ -36,6 +36,7 @@ bool dpmsSetMonitorPower(Display *dpy, bool on) {
     // see https://github.com/freedesktop/xorg-xset/blob/41b3ad04db4f9fdcf2705445a28c9cceecf6d980/xset.c#L584
     std::this_thread::sleep_for(std::chrono::microseconds(100000));
     DPMSForceLevel(dpy, on ? DPMSModeOn : DPMSModeOff);
+    XSetScreenSaver(dpy, 0, 0, 1, 1);
     DPMSSetTimeouts(dpy, 0, 0, 0); // so that our DPMS state don't change based on time
     XFlush(dpy);
     return true;
