@@ -29,16 +29,20 @@ std::optional<bool> dpmsGetMonitorPower(Display *dpy) {
     return {};
 }
 
+void resetDPMS(Display *dpy) {
+  XSetScreenSaver(dpy, 0, 0, 1, 1);
+  DPMSSetTimeouts(dpy, 0, 0, 0); // so that our DPMS state don't change based on time
+  XFlush(dpy);
+}
+
 bool dpmsSetMonitorPower(Display *dpy, bool on) {
   int dummy;
   if (DPMSQueryExtension(dpy, &dummy, &dummy) && DPMSCapable(dpy)) {
     DPMSEnable(dpy);
     // see https://github.com/freedesktop/xorg-xset/blob/41b3ad04db4f9fdcf2705445a28c9cceecf6d980/xset.c#L584
     std::this_thread::sleep_for(std::chrono::microseconds(100000));
+    resetDPMS(dpy);
     DPMSForceLevel(dpy, on ? DPMSModeOn : DPMSModeOff);
-    XSetScreenSaver(dpy, 0, 0, 1, 1);
-    DPMSSetTimeouts(dpy, 0, 0, 0); // so that our DPMS state don't change based on time
-    XFlush(dpy);
     return true;
   } else
     return false;
@@ -177,6 +181,8 @@ int main(int argc, char *argv[]) {
     } else if (client) {
       std::cout << "Listening for DPMS state from " << address.value_or("(any)") << ":" << port.Get()
                 << " using display " << displayName << std::endl;
+
+      resetDPMS(dpy);
 
       startClient(address, port.Get(), [&](const MonitorState &p) {
         auto now = epochMsNow();
